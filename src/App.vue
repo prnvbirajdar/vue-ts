@@ -2,27 +2,32 @@
   <h1>Todo List (Vue + TS)</h1>
 
   <form @submit.prevent="addTodo">
-    <label for="title">Title:</label>
-    <input id="title" name="title" v-model="title" />
+    <div>
+      <label for="title">Title:</label>
+      <input id="title" name="title" v-model="title" />
+    </div>
 
-    <label for="details">Details:</label>
-    <textarea
-      name="details"
-      id="details"
-      cols="30"
-      rows="10"
-      v-model="details"
-    />
+    <div>
+      <label for="details">Details:</label>
+      <textarea
+        name="details"
+        id="details"
+        cols="30"
+        rows="10"
+        v-model="details"
+      />
+    </div>
 
     <button type="submit">Submit</button>
   </form>
-
-  <div>{{ title }}</div>
-
-  <div>{{ details }}</div>
-
   <ul>
-    <li v-for="todo in todos" :key="todo.id">{{ todo.title }}</li>
+    <li v-for="(todo, index) in todos" :key="todo.id">
+      <div>
+        {{ todo.title }}
+        <button type="button" @click="removeTodo(index)">X</button>
+      </div>
+      <div>{{ todo.details }}</div>
+    </li>
   </ul>
 
   <!-- <FormInput inputObj="inputData" /> -->
@@ -31,6 +36,7 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from "vue";
 import FormInput from "./components/FormInput.vue";
+import Todos from "./types/todos";
 
 export default defineComponent({
   name: "App",
@@ -39,20 +45,28 @@ export default defineComponent({
   },
   setup() {
     const inputData = reactive({
-      id: Date.now(),
       title: "",
       details: "",
-      completed: false,
     });
 
-    const todos = reactive([]);
+    const todos = reactive<Todos[]>([]);
 
     const addTodo = () => {
-      console.log(inputData);
-      todos.push({ inputData });
+      todos.push({
+        title: inputData.title,
+        details: inputData.details,
+        id: Date.now(),
+        completed: false,
+      });
+      inputData.title = "";
+      inputData.details = "";
     };
 
-    return { ...toRefs(inputData), addTodo, todos };
+    const removeTodo = (i: number) => {
+      todos.splice(i, 1);
+    };
+
+    return { ...toRefs(inputData), addTodo, todos, removeTodo };
   },
 });
 </script>
