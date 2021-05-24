@@ -7,8 +7,6 @@
     <input id="search" name="search" v-model="searchInput" />
   </label>
 
-  {{ searchInput }}
-
   <h2>Add Todo</h2>
 
   <form @submit.prevent="addTodo">
@@ -31,7 +29,7 @@
     <button type="submit">Submit</button>
   </form>
   <ul>
-    <li v-for="(todo, index) in todos" :key="todo.id">
+    <li v-for="(todo, index) in filteredTodos" :key="todo.id">
       <div :class="{ done: todo.completed }">
         {{ todo.title }}
         <label for="todoCompleted">
@@ -56,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, ref } from "vue";
+import { defineComponent, reactive, toRefs, ref, computed } from "vue";
 import FormInput from "./components/FormInput.vue";
 import Todos from "./types/todos";
 
@@ -109,7 +107,16 @@ export default defineComponent({
       todos.splice(i, 1);
     };
 
-    return { ...toRefs(inputData), addTodo, todos, removeTodo, searchInput };
+    const filteredTodos = computed(() => todos.filter((todo) => todo.title.includes(searchInput.value)));
+
+    return {
+      ...toRefs(inputData),
+      addTodo,
+      todos,
+      removeTodo,
+      searchInput,
+      filteredTodos,
+    };
   },
 });
 </script>
