@@ -4,7 +4,7 @@
   <form @submit.prevent="addTodo">
     <div>
       <label for="title">Title:</label>
-      <input id="title" name="title" v-model="title" />
+      <input id="title" name="title" v-model.trim.lazy="title" />
     </div>
 
     <div>
@@ -14,7 +14,7 @@
         id="details"
         cols="30"
         rows="10"
-        v-model="details"
+        v-model.trim.lazy="details"
       />
     </div>
 
@@ -24,9 +24,21 @@
     <li v-for="(todo, index) in todos" :key="todo.id">
       <div>
         {{ todo.title }}
-        <button type="button" @click="removeTodo(index)">X</button>
+        <label for="todoCompleted">
+          <input
+            type="checkbox"
+            name="todoCompleted"
+            id="todoCompleted"
+            v-model="todo.completed"
+          />
+        </label>
       </div>
-      <div>{{ todo.details }}</div>
+      <div>
+        {{ todo.details
+        }}<button type="button" @click="removeTodo(index)">X</button>
+      </div>
+      <br />
+      <hr />
     </li>
   </ul>
 
@@ -49,7 +61,28 @@ export default defineComponent({
       details: "",
     });
 
-    const todos = reactive<Todos[]>([]);
+    const todos = reactive<Todos[]>([
+      {
+        title: "one",
+        details: "details",
+        id: 1,
+        completed: true,
+      },
+      {
+        title: "two",
+        details: "details2222",
+        id: 2,
+        completed: false,
+      },
+      {
+        title: "three",
+        details: "details3333333",
+        id: 3,
+        completed: false,
+      },
+    ]);
+
+    console.log(todos[2].completed);
 
     const addTodo = () => {
       todos.push({
