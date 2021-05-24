@@ -1,6 +1,16 @@
 <template>
   <h1>Todo List (Vue + TS)</h1>
 
+  <h2>Search</h2>
+
+  <label for="search">
+    <input id="search" name="search" v-model="searchInput" />
+  </label>
+
+  {{ searchInput }}
+
+  <h2>Add Todo</h2>
+
   <form @submit.prevent="addTodo">
     <div>
       <label for="title">Title:</label>
@@ -13,7 +23,7 @@
         name="details"
         id="details"
         cols="30"
-        rows="10"
+        rows="2"
         v-model.trim.lazy="details"
       />
     </div>
@@ -22,7 +32,7 @@
   </form>
   <ul>
     <li v-for="(todo, index) in todos" :key="todo.id">
-      <div>
+      <div :class="{ done: todo.completed }">
         {{ todo.title }}
         <label for="todoCompleted">
           <input
@@ -33,7 +43,7 @@
           />
         </label>
       </div>
-      <div>
+      <div :class="{ done: todo.completed }">
         {{ todo.details
         }}<button type="button" @click="removeTodo(index)">X</button>
       </div>
@@ -46,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from "vue";
+import { defineComponent, reactive, toRefs, ref } from "vue";
 import FormInput from "./components/FormInput.vue";
 import Todos from "./types/todos";
 
@@ -60,6 +70,8 @@ export default defineComponent({
       title: "",
       details: "",
     });
+
+    const searchInput = ref("");
 
     const todos = reactive<Todos[]>([
       {
@@ -82,8 +94,6 @@ export default defineComponent({
       },
     ]);
 
-    console.log(todos[2].completed);
-
     const addTodo = () => {
       todos.push({
         title: inputData.title,
@@ -99,7 +109,7 @@ export default defineComponent({
       todos.splice(i, 1);
     };
 
-    return { ...toRefs(inputData), addTodo, todos, removeTodo };
+    return { ...toRefs(inputData), addTodo, todos, removeTodo, searchInput };
   },
 });
 </script>
@@ -112,5 +122,10 @@ export default defineComponent({
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.done {
+  text-decoration: line-through;
+  color: green;
 }
 </style>
