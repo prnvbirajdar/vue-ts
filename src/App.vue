@@ -1,11 +1,35 @@
 <template>
   <h1>Todo List (Vue + TS)</h1>
 
-  <FormInput inputObj="inputData" />
+  <form @submit.prevent="addTodo">
+    <label for="title">Title:</label>
+    <input id="title" name="title" v-model="title" />
+
+    <label for="details">Details:</label>
+    <textarea
+      name="details"
+      id="details"
+      cols="30"
+      rows="10"
+      v-model="details"
+    />
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <div>{{ title }}</div>
+
+  <div>{{ details }}</div>
+
+  <ul>
+    <li v-for="todo in todos" :key="todo.id">{{ todo.title }}</li>
+  </ul>
+
+  <!-- <FormInput inputObj="inputData" /> -->
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, reactive, toRefs } from "vue";
 import FormInput from "./components/FormInput.vue";
 
 export default defineComponent({
@@ -14,14 +38,21 @@ export default defineComponent({
     FormInput,
   },
   setup() {
-    const inputData = ref({
+    const inputData = reactive({
       id: Date.now(),
       title: "",
       details: "",
-      completed: false
+      completed: false,
     });
 
-    return { inputData };
+    const todos = reactive([]);
+
+    const addTodo = () => {
+      console.log(inputData);
+      todos.push({ inputData });
+    };
+
+    return { ...toRefs(inputData), addTodo, todos };
   },
 });
 </script>

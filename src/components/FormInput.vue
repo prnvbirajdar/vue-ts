@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from "vue";
+import { defineComponent } from "vue";
 export default defineComponent({
   name: "HelloWorld",
   props: {
@@ -21,10 +21,6 @@ export default defineComponent({
       type: String,
       required: true,
     },
-  },
-  setup: () => {
-    const count = ref(0);
-    return { count };
   },
 });
 </script>
